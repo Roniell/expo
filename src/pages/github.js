@@ -1,10 +1,25 @@
 import React from 'react';
+import { useState } from 'react';
 import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+
+import api from '../service/api';
 
 export default function Github(){
 
-    function buscar(){
-        console.log('Chamou o botão buscar!');
+    const [id, setID] = useState('');
+    const [usuario, setUsuario] = useState('');
+    const [login, setLogin] = useState('');
+    const [avatar, setAvatar] = useState('');
+
+    async function buscar() {
+        // console.warn('Chamou o botão buscar!');
+        // Promisse
+        await api.get(usuario).then(resp =>{
+            setID(resp.data.id);
+            setLogin(resp.data.login);
+            setAvatar(resp.data.avatar_url);
+        }).catch((error) => console.warn(error));
+
     }
 
     return(
@@ -16,6 +31,7 @@ export default function Github(){
             <TextInput
             style={style.input}
                 placeholder="Usuário"
+                onChangeText={usuario => setUsuario(usuario)}
             />
             <TouchableOpacity
                 style={style.botao}
@@ -25,10 +41,10 @@ export default function Github(){
             </TouchableOpacity>
             <Image
             style={style.imagem} 
-                source={require('../assets/Octocat.png')}
+                source={{ uri: avatar }}
             />
-            <Text style={style.txtInfo}>ID: </Text>
-            <Text style={style.txtInfo}>LOGIN: </Text>
+            <Text style={style.txtInfo}>Id: {id}</Text>
+            <Text style={style.txtInfo}>Login: {login}</Text>
             
         </View>
     );
